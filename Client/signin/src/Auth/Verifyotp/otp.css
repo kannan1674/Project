@@ -1,0 +1,69 @@
+*{
+    margin: 0;
+    padding: 0;
+    border: 0;
+    box-sizing: border-box;
+    font-family: sans-serif;
+}
+
+body{
+    min-height: 100vh;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.text-muted{
+    color: #7d7d82;
+}
+a{
+    color: #2779fb;
+    text-decoration: none;
+}
+.otp_form_container{
+    padding: 2rem;
+    color: white;
+    text-align: center;
+    border-radius: 10px;
+  }
+  .otp_form_container >.top>.title{
+    margin: 1rem 0;
+    font-size: 1.5rem;
+    color: gray;
+  }
+  .otp_form_container>.middle>.wrapper input{
+    color: rgb(17, 17, 17);
+    width: 3rem !important;
+    height: 3rem !important;
+    margin: 20px 0.5rem;
+    font-size: 1rem;
+    border-radius: 4px;
+    border: 1px solid rgba(255, 283, 233, 0.2);
+    margin-left: 28px;
+  }
+  .otp_form_container>.middle>.wrapper input:focus{
+    outline: solid 1px #716af5;
+  }
+  .otp_form_container>.bottom{
+    margin-top: 2rem;
+  }
+  .otp_form_container.submit_btn{
+    padding: 10px 20px;
+    color: white;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: 0.4s;
+  }
+  .otp_form_container.submit_btn.active:hover{
+    background: transparent;
+    color: #716af5;
+    outline: solid 1px #716af5;
+  }
+  .background-container {
+    background-image: url('C:/Users/MEIKANNAN/Desktop/Project/Client/signin/src/assets/bg4.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    height: 100vh;
+    padding-top: 30px; 
+  }

@@ -1,0 +1,146 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  font-family: 'Poppins', sans-serif;
+}
+
+body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  background-image:url('../assets/bg4.jpg');
+}
+
+/* Form */
+.form-container {
+  width: 1000px;
+  padding: 20px;
+  background-color: white;
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  
+}
+
+.title {
+  text-align: center;
+}
+
+.btn{
+  width: 100%;
+  margin-top: 10px !important;
+}
+.auth-image{
+  width: 100%;
+  background-color: #cbdbff;
+  border-radius: 8px !important;
+}
+
+.autth-image{
+  width: 100%;
+  background-color: #cbdbff;
+  border-radius: 8px !important;
+}
+.alert{
+  margin-bottom: 1.5rem;
+}
+.forgot{
+  margin-left: 310px;
+  margin-bottom: 2px;
+}
+.centerr{
+  padding-bottom: 10px;
+}
+.otp_form_container{
+  padding: 2rem;
+  color: rgb(201, 13, 13);
+  text-align: center;
+  border-radius: 10px;
+}
+.otp_form_container >.top>.title{
+  margin: 1rem 0;
+  font-size: 1.5rem;
+}
+.otp_form_container>.middle>.wrapper input{
+  color: rgb(21, 138, 192);
+  width: 4rem !important;
+  height: 4rem !important;
+  margin: 20px 0.5rem;
+  font-size: 1rem;
+  border-radius: 4px;
+  border: 1px solid rgba(255, 283, 233, 0.2);
+  outline: solid 1px #716af5;
+
+}
+.otp_form_container>.middle>.wrapper input:focus{
+  outline: solid 1px #716af5;
+}
+.otp_form_container>.bottom{
+  margin-top: 2rem;
+}
+.otp_form_container .submit-btn {
+  padding: 10px 20px;
+  color: white;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: 0.4s;
+  background-color: #716af5; /* Add a background color for the default state */
+}
+
+.otp_form_container .submit-btn:hover {
+  background: transparent;
+  color: #716af5;
+  outline: solid 1px #716af5;
+}
+
+/* Responsive Design */
+/* For screens between 768px and 1024px (tablets) */
+@media (max-width: 1024px) {
+  .form-container {
+    width: 100%; /* Full width for the form container */
+  }
+
+  .card {
+    width: 90%; /* Increase the card width */
+    margin: 0 auto; /* Center the card */
+  }
+
+  input {
+    width: 95%; /* Increase input width */
+    padding: 10px; /* Add some padding for better UX */
+    margin: 10px 0; /* Space between inputs */
+  }
+}
+
+@media (max-width: 768px) {
+  .form-container {
+    width: 100%;
+  }
+
+  .card {
+    width: 100%; /* Full width for cards on smaller screens */
+  }
+
+  input {
+    width: 100%; /* Full width inputs for smaller screens */
+  }
+}
+
+@media (max-width: 480px) {
+  .form-container {
+    width: 100%;
+    padding: 10px;
+  }
+
+  .card {
+    width: 100%;
+  }
+
+  input {
+    width: 100%;
+  }
+}
+
+

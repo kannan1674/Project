@@ -1,0 +1,83 @@
+/* Default styling for larger screens */
+.table-component {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 16px;
+}
+
+.table-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 16px;
+  gap: 10px; /* Space between input and button */
+  width: 100%;
+}
+
+.search-input {
+  width: 200px;
+  margin-right: 8px;
+}
+
+.action-button {
+  white-space: nowrap;
+}
+
+.table-container {
+  width: 100%;
+  max-width: 800px; /* Set a max-width for better alignment on larger screens */
+  overflow-x: auto; /* Enable horizontal scroll on smaller screens */
+  margin-top: 10px;
+}
+
+/* Tablet view adjustments */
+@media (max-width: 992px) {
+  .table-controls {
+    flex-direction: row;
+    justify-content: center;
+    gap: 5px;
+  }
+
+  .search-input,
+  .action-button {
+    width: auto;
+  }
+}
+
+/* Mobile view adjustments */
+@media (max-width: 576px) {
+  .table-component {
+    padding: 8px;
+  }
+
+  .table-controls {
+    flex-direction: column;
+    align-items: stretch;
+    margin-bottom: 12px;
+  }
+
+  .search-input,
+  .action-button {
+    width: 100%;
+    margin: 4px 0;
+  }
+
+  .table-container {
+    margin-left: 0; /* Reset any left margin for full-width view on mobile */
+  }
+}
+.table-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+  padding: 20px;
+  margin-left: 100px;
+}
+
+/* .table-controls {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+} */

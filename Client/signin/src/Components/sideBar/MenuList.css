@@ -1,0 +1,9 @@
+.theme-toggle {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+   
+    bottom: 100px;
+}
+
+
