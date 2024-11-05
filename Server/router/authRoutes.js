@@ -3,6 +3,7 @@ const authController = require('../controller/authController')
 const router = express.Router();
 const productController = require('../controller/productController')
 const customerController = require('../controller/customerController')
+const teamController = require('../controller/teamController')
 
 //Employee
 router.post('/add-product',productController.addProduct)
@@ -16,7 +17,9 @@ router.get('/get-customer',customerController.getCustomer)
 router.put('/update-customer/:id', customerController.updateCustomer);
 router.delete('/delete-customer/:id', customerController.deleteCustomer);
 
-
+//Team
+router.post("/add-team",teamController.createTeam);
+router.get("/get-team",teamController.getTeam);
 
 //Auth
 router.post('/signup',authController.signup)
@@ -25,6 +28,7 @@ router.post('/login',authController.login)
 router.post('/forgot-password',authController.forgotPassword)
 router.post('/otp-verify',authController.verifyOtp)
 router.get('/get-user/:email', authController.getUsers);
+router.post('/change-password',authController.changePassword)
 
 //router.post('/resend-otp',authController.resendOtp)
 router.post('/update-password/:userId', authController.updatePassword);

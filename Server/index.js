@@ -3,30 +3,31 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const session = require('express-session');
 const authRoutes = require('./router/authRoutes');
-require('dotenv').config(); 
+const path = require('path'); 
+require('dotenv').config();
+const jwtSecret = process.env.JWT_SECRET;
 
 const app = express();
 
-// Middleware to parse JSON
+
 app.use(express.json());
 
-// CORS configuration
+
 app.use(cors({
-  origin: 'http://localhost:3000', // Adjust as necessary
+  origin: 'http://localhost:3000',
   credentials: true
 }));
-// Session middleware
+
+
 app.use(session({
-    secret: JWT_SECRET, // Your session secret
+    secret: jwtSecret, 
     resave: false,
     saveUninitialized: true,
-    cookie: { secure: false } // Set to true if using HTTPS
+    cookie: { secure: false } 
 }));
 
 
-// Use auth routes after session middleware
 app.use('/api', authRoutes);
-
 
 // Connect to MongoDB
 mongoose.connect('mongodb://localhost:27017/Users') 
@@ -34,7 +35,15 @@ mongoose.connect('mongodb://localhost:27017/Users')
 .catch((err) => console.error('Failed to Connect to DB', err));
 
 
-// Global error handling middleware
+const buildPath = path.join(__dirname, 'client', 'build'); 
+app.use(express.static(buildPath));
+
+
+app.get('*', (req, res) => {
+    res.sendFile(path.join(buildPath, 'index.html'));
+});
+
+
 app.use((err, req, res, next) => {
     err.statusCode = err.statusCode || 500;
     err.status = err.status || 'error';
@@ -45,8 +54,8 @@ app.use((err, req, res, next) => {
     });
 });
 
-// Start the server
-const PORT = 8000; // You can change the port if needed
+
+const PORT = 8000; 
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
 });

@@ -4,18 +4,17 @@ exports.createCustomer = async (req, res, next) => {
   try {
     const { CustomerName, Email, TotalOrders, PendingOrders, TotalAmount, Address } = req.body;
 
-    // Check for missing fields
     if (!CustomerName || !Email || !TotalOrders || !PendingOrders || !TotalAmount || !Address) {
       return res.status(400).json({ message: "Please Provide All Required Details" });
     }
 
-    // Check if a customer with the same email already exists
+    
     const existingCustomer = await Customer.findOne({ Email });
     if (existingCustomer) {
       return res.status(409).json({ message: "Customer with this email already exists" });
     }
 
-    // Create and save new customer
+   
     const customer = new Customer({ CustomerName, Email, TotalOrders, PendingOrders, TotalAmount, Address });
     await customer.save();
 
@@ -60,7 +59,6 @@ exports.updateCustomer = async (req, res, next) => {
       return res.status(404).json({ message: "Customer Not Found" });
     }
 
-    // Respond with the updated customer
     return res.status(200).json({
       status: "success",
       message: "Customer updated successfully",
@@ -74,7 +72,7 @@ exports.updateCustomer = async (req, res, next) => {
       },
     });
   } catch (error) {
-    // Handle errors appropriately
+   
     return res.status(500).json({
       status: "error",
       message: "An error occurred while updating the customer",

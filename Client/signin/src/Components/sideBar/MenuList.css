@@ -5,5 +5,12 @@
    
     bottom: 100px;
 }
+.custom-menu {
+    font-size: 15px; /* Change this to the desired font size */
+}
+
+.custom-menu .ant-menu-item {
+    font-size: inherit; /* Ensure menu items inherit the custom font size */
+}
 
 

@@ -242,6 +242,10 @@ const Employee = () => {
         </Typography>
         <Divider />
         <Row gutter={16}>
+        <Col xs={24} md={12}>
+            <div className="text-gray fs-6">Name</div>
+            <div className="fw-bold fs-6">{selectedEmployee?.Name || 'Not Provided'}</div>
+          </Col>
           <Col xs={24} md={12}>
             <div className="text-gray fs-6">Email</div>
             <div className="fw-bold fs-6">{selectedEmployee?.Email || 'Not Provided'}</div>

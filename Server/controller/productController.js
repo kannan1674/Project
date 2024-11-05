@@ -1,6 +1,6 @@
-const Product = require('../model/add'); // Adjust the path accordingly
+const Product = require('../model/add'); 
 
-// Function to add a product
+
 exports.addProduct = async (req, res, next) => {
     try {
         const { Name, MobileNumber,Email,Gender,dob,Address,status = 'active'  } = req.body;
@@ -29,7 +29,7 @@ exports.addProduct = async (req, res, next) => {
     }
 };
 
-// Function to get all products
+
 exports.getProducts = async (req, res, next) => {
     try {
         const products = await Product.find(); // Fetch all products from the database

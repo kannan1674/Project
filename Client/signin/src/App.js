@@ -11,6 +11,7 @@ import OTP from './Auth/Verifyotp/otp';
 import ResetPassword from './Auth/resetpassword';
 import Employee from './pages/Employee'
 import Customer from './pages/customer'
+import Team from './pages/team'
 
 const App = () => {
   const { isAuthenticate } = useAuth();
@@ -27,6 +28,7 @@ const App = () => {
         <Route path="/dashboard" element={isAuthenticate ? <Dashboard /> : <Navigate to="/login" />} />
         <Route path="/employee" element={<Employee /> } />
         <Route path="/customer" element={<Customer /> } />
+        <Route path="/team" element={<Team /> } />
       </Routes>
     </Router>
   );
