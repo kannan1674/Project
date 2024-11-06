@@ -1,6 +1,4 @@
-const Team = require('../model/team')
-
-
+const Team = require('../model/team');
 
 exports.createTeam = async (req, res, next) => {
     try {
@@ -10,8 +8,13 @@ exports.createTeam = async (req, res, next) => {
             return res.status(400).send({ message: "Please Provide Team Name" });
         }
 
-        // Assuming employeeIds is now an array of objects with id and name
-        const employeeIDs = employeeIds.map(emp => emp.id); // Extract just the IDs for storage
+      
+        if (!Array.isArray(employeeIds)) {
+            return res.status(400).send({ message: "employeeIds should be an array" });
+        }
+
+      
+        const employeeIDs = employeeIds.map(emp => emp.id); 
 
         const team = new Team({ TeamName, employees: employeeIDs });
         await team.save();
@@ -20,9 +23,8 @@ exports.createTeam = async (req, res, next) => {
             message: "Team Created",
             status: "Success",
             team: {
-                id: team._id,
                 TeamName: team.TeamName,
-                employees: team.employees, // Store only IDs in the database
+                employees: team.employees, 
             }
         });
     } catch (error) {
@@ -30,11 +32,11 @@ exports.createTeam = async (req, res, next) => {
     }
 };
 
-exports.getTeam = async(req,res,next)=>{
+exports.getTeam = async (req, res, next) => {
     try {
-        const team = await Team.find()
-    return res.status(200).json(team)
+        const team = await Team.find();
+        return res.status(200).json(team);
     } catch (error) {
-        next(error)
+        next(error);
     }
-}
+};

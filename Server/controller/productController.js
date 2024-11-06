@@ -3,31 +3,33 @@ const Product = require('../model/add');
 
 exports.addProduct = async (req, res, next) => {
     try {
-        const { Name, MobileNumber,Email,Gender,dob,Address,status = 'active'  } = req.body;
+        const { Name, MobileNumber, Email, Gender, dob, Address, status = 'active', Team } = req.body;
 
-        if (!Name || !MobileNumber || !Email || !Gender ) {
-            return res.status(400).json({ message: "Please Provide Detils" });
+        if (!Name || !MobileNumber || !Email || !Gender) {
+            return res.status(400).json({ message: "Please Provide Details" });
         }
 
-        const product = new Product({ Name,MobileNumber,Email,Gender,dob,Address,status  });
+        const product = new Product({ Name, MobileNumber, Email, Gender, dob, Address, status, Team });
         await product.save();
 
         return res.status(201).json({ 
             message: "Employee Added",
             product: {
-                Name: product.Name, // Custom ID
+                Name: product.Name,
                 MobileNumber: product.MobileNumber,
                 Email: product.Email,
-                Gender:product.Gender,
-                dob:product.dob,
-                address:product.Address,
-                status:product.status
+                Gender: product.Gender,
+                dob: product.dob,
+                address: product.Address,
+                status: product.status,
+                Team: product.Team
             }
-         });
+        });
     } catch (error) {
         next(error);
     }
 };
+
 
 
 exports.getProducts = async (req, res, next) => {
@@ -41,13 +43,13 @@ exports.getProducts = async (req, res, next) => {
 
 exports.updateProducts = async (req, res, next) => {
     try {
-        const { Name, MobileNumber,Email,Gender,dob,Address,status = 'active'   } = req.body;
+        const { Name, MobileNumber,Email,Gender,dob,Address,Team   } = req.body;
         const id = req.params.id;
 
         // Use findByIdAndUpdate to update the product
         const updateProduct = await Product.findByIdAndUpdate(
             id,
-             { Name, MobileNumber,Email,Gender,dob,Address,status  },
+             { Name, MobileNumber,Email,Gender,dob,Address,Team  },
             { new: true, runValidators: true } // runValidators ensures schema validation
         );
 
@@ -68,7 +70,7 @@ exports.updateProducts = async (req, res, next) => {
                 Gender:updateProduct.Gender,
                 dob:updateProduct.dob,
                 address:updateProduct.Address,
-                status:updateProduct.status
+                Team:updateProduct.Team
             }
         });
     } catch (error) {

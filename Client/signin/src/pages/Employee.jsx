@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { Typography, Modal, Divider, Form, Input, Select, DatePicker, Button, Row, Col, Space, message, Popconfirm } from 'antd';
+import { Typography, Modal, Divider, Form, Input, Select, DatePicker, Button, Row, Col, Space, message, Popconfirm, Drawer } from 'antd';
+import { FilterOutlined } from '@ant-design/icons'; // Import Filter icon
+import axios from 'axios';
+import moment from 'moment';
 import MenuList from '../Components/sideBar/MenuList';
 import TablesComponenet from '../Components/Table/TablesComponenet';
-import axios from 'axios';
-import TextArea from 'antd/es/input/TextArea';
-import moment from 'moment';
 
 const { Title } = Typography;
 const { Option } = Select;
@@ -15,17 +15,76 @@ const Employee = () => {
   const [detailModalVisible, setDetailModalVisible] = useState(false);
   const [selectedEmployee, setSelectedEmployee] = useState(null);
   const [form] = Form.useForm();
-  // const [status, setStatus] = useState(false); // New state for status checkbox
+  const [teams, setTeams] = useState([]);
+  const [filterDrawerVisible, setFilterDrawerVisible] = useState(false); // State for controlling the Drawer
+  const [selectedTeam, setSelectedTeam] = useState(null);
 
-  const showModal = () => {
-    setModalVisible(true);
+  // Fetch teams data from the server
+  useEffect(() => {
+    axios.get('http://localhost:8000/api/get-team')
+      .then(response => {
+        if (Array.isArray(response.data)) {
+          setTeams(response.data);
+        } else {
+          console.error('Unexpected data format:', response.data);
+        }
+      })
+      .catch(error => console.error('Failed to load teams:', error));
+  }, []);
+
+  const loadDataSource = (teamId) => {
+    const apiUrl = teamId
+      ? `http://localhost:8000/api/get-product?teamId=${teamId}` // Modify API to accept filtering by teamId
+      : 'http://localhost:8000/api/get-product';
+
+    console.log('Fetching data with URL:', apiUrl); // Log the URL being called
+
+    axios.get(apiUrl)
+      .then((response) => {
+        console.log('API Response:', response.data); // Log the response from the API
+        setDataSource(response.data);
+      })
+      .catch(error => {
+        console.log('Error:', error);
+      });
+  };
+
+  useEffect(() => {
+    loadDataSource();
+  }, []);
+
+  const handleFilterClick = () => {
+    setFilterDrawerVisible(true);
+  };
+
+  const handleFilterDrawerClose = () => {
+    setFilterDrawerVisible(false);
+  };
+
+  const handleTeamFilterSubmit = () => {
+    if (selectedTeam) {
+      loadDataSource(selectedTeam); // Call the API to filter by team
+      handleFilterDrawerClose(); // Close the filter drawer
+    } else {
+      message.warning('Please select a team.');
+    }
+  };
+
+  useEffect(() => {
+    if (dataSource.length === 0) {
+      message.info('No employees found for the selected team.');
+    }
+  }, [dataSource]);
+
+  const handleNameClick = (employee) => {
+    setSelectedEmployee(employee);
+    setDetailModalVisible(true);
   };
 
   const handleCancel = () => {
     setModalVisible(false);
     form.resetFields();
     setSelectedEmployee(null);
-   
   };
 
   const handleFormSubmit = (values) => {
@@ -36,11 +95,11 @@ const Employee = () => {
       Gender: values.gender,
       dob: values.dob.format('YYYY-MM-DD'),
       Address: values.Address,
-    
+      Team: values.Team
     };
 
-    const apiEndpoint = selectedEmployee 
-      ? `http://localhost:8000/api/update-product/${selectedEmployee._id}` 
+    const apiEndpoint = selectedEmployee
+      ? `http://localhost:8000/api/update-product/${selectedEmployee._id}`
       : 'http://localhost:8000/api/add-product';
 
     const axiosMethod = selectedEmployee ? axios.put : axios.post;
@@ -57,31 +116,6 @@ const Employee = () => {
       });
   };
 
-  const loadDataSource = () => {
-    axios.get('http://localhost:8000/api/get-product')
-      .then((response) => {
-        setDataSource(response.data);
-      })
-      .catch(error => {
-        console.log('Error:', error);
-      });
-  };
-
-  useEffect(() => {
-    loadDataSource();
-  }, []);
-
-  const handleNameClick = (employee) => {
-    setSelectedEmployee(employee);
-    setDetailModalVisible(true);
-  };
-
-  const handleDetailModalClose = () => {
-    setDetailModalVisible(false);
-    setSelectedEmployee(null);
-  };
-
- 
   const handleEdit = (employee) => {
     setSelectedEmployee(employee);
     setModalVisible(true);
@@ -92,6 +126,7 @@ const Employee = () => {
       gender: employee.Gender,
       dob: moment(employee.dob),
       Address: employee.Address,
+      Team: employee.Team
     });
   };
 
@@ -110,6 +145,16 @@ const Employee = () => {
   return (
     <div>
       <MenuList />
+
+      {/* Search Box with Filter Icon */}
+      <Button
+        icon={<FilterOutlined />}
+        type="primary"
+        onClick={handleFilterClick}
+      >
+        Filter
+      </Button>
+
       <TablesComponenet
         columns={[
           {
@@ -123,7 +168,6 @@ const Employee = () => {
             ),
             width: '200px'
           },
-          
           {
             title: 'Email',
             dataIndex: 'Email',
@@ -134,7 +178,6 @@ const Employee = () => {
             dataIndex: 'MobileNumber',
             width: '250px'
           },
-          
           {
             title: 'Action',
             dataIndex: 'action',
@@ -155,9 +198,40 @@ const Employee = () => {
           }
         ]}
         dataSource={dataSource}
-        showModal={showModal}
-       
       />
+
+      {/* Filter Drawer */}
+      <Drawer
+        title="Filter Employees by Team"
+        placement="right"
+        onClose={handleFilterDrawerClose}
+        visible={filterDrawerVisible}
+        width={300}
+      >
+        <Form onFinish={handleTeamFilterSubmit}>
+          <Form.Item
+            name="team"
+            label="Select Team"
+            rules={[{ required: true, message: 'Please select a team' }]}
+          >
+            <Select
+              style={{ width: '100%' }}
+              placeholder="Select Team"
+              onChange={(value) => setSelectedTeam(value)}
+            >
+              {teams.map(team => (
+                <Option key={team._id} value={team._id}>
+                  {team.TeamName}
+                </Option>
+              ))}
+            </Select>
+          </Form.Item>
+          <Form.Item>
+            <Button type="primary" htmlType="submit">Search</Button>
+            <Button type="default" onClick={handleFilterDrawerClose} style={{ marginLeft: '8px' }}>Cancel</Button>
+          </Form.Item>
+        </Form>
+      </Drawer>
 
       {/* Modal to add or edit employee */}
       <Modal
@@ -186,88 +260,44 @@ const Employee = () => {
           <Row gutter={16}>
             <Col span={12}>
               <Form.Item label='Mobile Number' name='mobileNumber' rules={[{ required: true, message: 'Please enter your Mobile Number' }]}>
-                <Input size='large' type='number' placeholder='Enter Your Mobile Number' />
+                <Input size='large' placeholder='Enter Mobile Number' />
               </Form.Item>
             </Col>
             <Col span={12}>
-              <Form.Item name="gender" label="Gender" rules={[{ required: true, message: 'Please select gender' }]}>
-                <Select size='large'>
-                  <Option value="Male">Male</Option>
-                  <Option value="Female">Female</Option>
-                  <Option value="Other">Other</Option>
+              <Form.Item label='Gender' name='gender'>
+                <Select size='large' placeholder='Select Gender'>
+                  <Option value='Male'>Male</Option>
+                  <Option value='Female'>Female</Option>
+                  <Option value='Other'>Other</Option>
                 </Select>
               </Form.Item>
             </Col>
           </Row>
-          <Row>
-            <Col>
-              <Form.Item name="dob" label="Date of Birth" rules={[{ required: true, message: 'Please select date of birth' }]}>
-                <DatePicker size='large' />
+          <Row gutter={16}>
+            <Col span={12}>
+              <Form.Item label='DOB' name='dob' rules={[{ required: true, message: 'Please select your Date of Birth' }]}>
+                <DatePicker style={{ width: '100%' }} />
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item label='Team' name='Team' rules={[{ required: true, message: 'Please select your Team' }]}>
+                <Select size='large' placeholder='Select Team'>
+                  {teams.map(team => (
+                    <Option key={team._id} value={team._id}>
+                      {team.TeamName}
+                    </Option>
+                  ))}
+                </Select>
               </Form.Item>
             </Col>
           </Row>
-          <Row gutter={24}>
-            <Col span={24}>
-              <Form.Item name="Address" label="Address" rules={[{ required: true, message: 'Please enter the address' }]}>
-                <TextArea rows={2} size='large' />
-              </Form.Item>
-            </Col>
-          </Row>
-          {/* <Row>
-            <Col span={24}>
-              <Checkbox checked={status} onChange={handleStatusChange}>Active</Checkbox>
-            </Col>
-          </Row> */}
-          <Divider />
-          <Form.Item style={{marginLeft:'670px'}}>
-            <Button type="primary" htmlType="submit" style={{backgroundColor:'#6130c7'}}>
-              {selectedEmployee ? 'Update' : 'Create'}
-            </Button>
-            <Button type="default" onClick={handleCancel} style={{ marginLeft: '8px' }}>
-              Cancel
-            </Button>
+          <Form.Item label="Address" name="Address" rules={[{ required: true, message: "Please enter your Address" }]}>
+            <Input.TextArea size="large" placeholder="Enter your address" />
+          </Form.Item>
+          <Form.Item>
+            <Button type="primary" htmlType="submit">{selectedEmployee ? 'Update Employee' : 'Create Employee'}</Button>
           </Form.Item>
         </Form>
-      </Modal>
-
-      {/* Detail Modal */}
-      <Modal
-        visible={detailModalVisible}
-        onCancel={handleDetailModalClose}
-        footer={null}
-        width="800px"
-      >
-        <Typography>
-          <Title level={4}>Employee Details</Title>
-        </Typography>
-        <Divider />
-        <Row gutter={16}>
-        <Col xs={24} md={12}>
-            <div className="text-gray fs-6">Name</div>
-            <div className="fw-bold fs-6">{selectedEmployee?.Name || 'Not Provided'}</div>
-          </Col>
-          <Col xs={24} md={12}>
-            <div className="text-gray fs-6">Email</div>
-            <div className="fw-bold fs-6">{selectedEmployee?.Email || 'Not Provided'}</div>
-          </Col>
-          <Col xs={24} md={12}>
-            <div className="text-gray fs-6">Mobile Number</div>
-            <div className="fw-bold fs-6">{selectedEmployee?.MobileNumber || 'Not Provided'}</div>
-          </Col>
-          <Col xs={24} md={12}>
-            <div className="text-gray fs-6">Gender</div>
-            <div className="fw-bold fs-6">{selectedEmployee?.Gender || 'Not Provided'}</div>
-          </Col>
-          <Col xs={24} md={12}>
-            <div className="text-gray fs-6">Date of Birth</div>
-            <div className="fw-bold fs-6">{selectedEmployee?.dob ? moment(selectedEmployee.dob).format('DD-MM-YYYY') : 'Not Provided'}</div>
-          </Col>
-          <Col xs={24} md={12}>
-            <div className="text-gray fs-6">Address</div>
-            <div className="fw-bold fs-6">{selectedEmployee?.Address || 'Not Provided'}</div>
-          </Col>
-          
-        </Row>
       </Modal>
     </div>
   );
